@@ -2,7 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <queue>
-#include <set>
+#include <unordered_set>
 
 using namespace std;
 int counter = 0;
@@ -18,10 +18,23 @@ struct NO {
     int zeroRow;
 };
 
+// Função de hash para vector<vector<int>>
+struct VectorHash {
+    size_t operator()(const vector<vector<int>>& v) const {
+        size_t hash = 0;
+        for (const auto& row : v) {
+            for (int num : row) {
+                hash ^= std::hash<int>()(num) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+            }
+        }
+        return hash;
+    }
+};
+
 void printSolution(NO*);
 void printMatriz(vector<vector<int>>);
 
-// Função para verificar se a matriz está ordenadaprintMatriz(aux->vetor);
+// Função para verificar se a matriz está ordenada
 bool verify(const std::vector<std::vector<int>>& matriz) {
     return matriz == idealVetor;
 }
@@ -44,7 +57,7 @@ NO* swapElements(NO* no, int numRow, int numCol) {
 
 NO* solve(NO* no) {
 
-    set<vector<vector<int>>> set;
+    unordered_set<vector<vector<int>>, VectorHash> set;
     queue<NO*> q;
 
     q.push(no);
@@ -136,9 +149,9 @@ int main() {
     
     //edite esta matriz
 
-    vector<vector<int>> vec = { { 3, 1, 2 },
-                                { 8, 0, 5 },
-                                { 6, 7, 4 } };
+    vector<vector<int>> vec = { { 3, 1, 7 },
+                                { 6, 4, 2 },
+                                { 5, 8, 0 } };
 
     NO* no = new NO();
     no->noPai = nullptr;
